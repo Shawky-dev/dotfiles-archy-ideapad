@@ -1,0 +1,35 @@
+/**
+ *
+ * Author : Aditya Shakya (adi1090x)
+ * Github : @adi1090x
+ * 
+ * Gruvbox Color Scheme
+ **/
+
+* {
+    /* Main colors matching the original structure */
+    background:     #1d2021;    /* base00 */
+    background-alt: #3c3836;    /* base01 */
+    foreground:     #d5c4a1;    /* base05 */
+    selected:       #83a598;    /* base0D - similar to original cyan */
+    active:         #b8bb26;    /* base0B - green for active */
+    urgent:         #fb4934;    /* base08 - red for urgent */
+    
+    /* Extended Gruvbox palette for additional use */
+    gruv-dark:      #1d2021;    /* base00 */
+    gruv-dark-alt:  #3c3836;    /* base01 */
+    gruv-gray1:     #504945;    /* base02 */
+    gruv-gray2:     #665c54;    /* base03 */
+    gruv-light1:    #bdae93;    /* base04 */
+    gruv-light2:    #d5c4a1;    /* base05 */
+    gruv-light3:    #ebdbb2;    /* base06 */
+    gruv-light4:    #fbf1c7;    /* base07 */
+    gruv-red:       #fb4934;    /* base08 */
+    gruv-orange:    #fe8019;    /* base09 */
+    gruv-yellow:    #fabd2f;    /* base0A */
+    gruv-green:     #b8bb26;    /* base0B */
+    gruv-aqua:      #8ec07c;    /* base0C */
+    gruv-blue:      #83a598;    /* base0D */
+    gruv-purple:    #d3869b;    /* base0E */
+    gruv-brown:     #d65d0e;    /* base0F */
+}
