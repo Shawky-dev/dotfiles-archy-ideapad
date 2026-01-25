@@ -1,0 +1,25 @@
+# Zsh
+**/.zcompdump*
+**/history
+
+# Cache / State
+**/cache/
+**/Cache/
+**/*.log
+
+# Editors / IDE
+.config/Code
+.config/Code/**
+
+# Browsers
+.config/mozilla
+.config/chromium
+
+# Secrets
+home/.ssh
+**/*.key
+**/*.pem
+
+# OS / Misc
+.DS_Store
+Thumbs.db
