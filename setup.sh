@@ -40,7 +40,7 @@ sudo pacman -S --needed --noconfirm \
 # ===== 2. I3 ESSENTIALS =====
 echo -e "${BLUE}Installing i3 packages...${NC}"
 sudo pacman -S --needed --noconfirm \
-    i3-gaps picom rofi polybar dunst kitty
+    i3-gaps picom rofi polybar dunst kitty xwallpaper
 
 # ===== 3. ZSH AND SHELL TOOLS =====
 echo -e "${BLUE}Installing ZSH and shell tools...${NC}"
