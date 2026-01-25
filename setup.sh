@@ -29,7 +29,7 @@ sudo pacman -S --needed --noconfirm \
     git curl \
     xorg-xrandr xclip xsel \
     fribidi jq bc xdotool \
-    pulseaudio pavucontrol playerctl \
+    pulseaudio pavucontrol playerctl polkit-gnome \
     network-manager-applet blueman \
     ttf-jetbrains-mono-nerd ttf-font-awesome noto-fonts noto-fonts-emoji \
     breeze breeze-gtk breeze-icons \

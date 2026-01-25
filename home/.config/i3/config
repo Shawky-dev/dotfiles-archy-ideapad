@@ -37,7 +37,15 @@ exec --no-startup-id nm-applet
 # Start picom (a compositor) for window transparency and shadows
 exec --no-startup-id picom -b --config ~/.config/picom/picom.conf
 
+# Set wallpaper using xwallpaper
 exec_always --no-startup-id xwallpaper --daemon --output all --zoom ~/Pictures/wallpapers/Nighthawks.png
+
+# Start the policy kit authentication agent
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+
+# Start dunst notification daemon
+exec --no-startup-id dunst
+
 
 
 # Use pactl to adjust volume in PulseAudio.
