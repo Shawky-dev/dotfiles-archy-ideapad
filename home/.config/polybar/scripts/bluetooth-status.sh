@@ -35,7 +35,11 @@ if power_on; then
             ((counter++))
         fi
     done
-    printf "\n"
+    if [ $counter -eq 0 ]; then
+        echo "On"  # Changed from empty line
+    else
+        echo ""  # Keep the newline
+    fi
 else
-    echo "Off"
+    echo "Off"  # Always output something
 fi

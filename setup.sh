@@ -56,7 +56,8 @@ yay -S --needed --noconfirm \
     i3lock-color\
     oh-my-zsh-git \
     zsh-theme-powerlevel10k \
-    visual-studio-code-bin
+    visual-studio-code-bin\
+    blueberry
 
 # ===== 5. TEXT EDITOR =====
 echo -e "${BLUE}Installing text editor...${NC}"

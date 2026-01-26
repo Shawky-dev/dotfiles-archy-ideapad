@@ -228,5 +228,8 @@ gaps top 35
 # PulseAudio / PipeWire volume mixer
 for_window [class="pavucontrol"] floating enable, resize set 800 500, move position center
 
+# Bluetooth manager
+for_window [class="Blueberry.py"] floating enable, resize set 800 500, move position center
+
 #Polybar launch
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh 

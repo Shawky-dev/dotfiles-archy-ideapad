@@ -1,31 +1,38 @@
 #!/bin/sh
 #
-# Check for pakages updates, from pacman and the AUR.
-# Requires pacman-contrib, paru, dunstify (optional).
+# Updates checker with dunst notifications
 
-UPDATE_FILE_TMP="/tmp/polybar_updates_arch_combined"
-[ ! -f "$UPDATE_FILE_TMP" ] && printf "0\n" >"$UPDATE_FILE_TMP"
+UPDATE_FILE_TMP="/tmp/polybar_updates"
+[ ! -f "$UPDATE_FILE_TMP" ] && echo "0" > "$UPDATE_FILE_TMP"
 
-UPDATES_ARCH="$(checkupdates 2>/dev/null | wc -l)" || UPDATES_ARCH=0
-UPDATES_AUR="$(paru -Qum 2>/dev/null | wc -l)" || UPDATES_AUR=0
+# Get updates count
+ARCH_UPDATES=$(checkupdates 2>/dev/null | wc -l)
+AUR_UPDATES=$(yay -Qum 2>/dev/null | wc -l)
 
-UPDATES=$(("$UPDATES_ARCH" + "$UPDATES_AUR"))
+# Default to 0 if empty
+[ -z "$ARCH_UPDATES" ] && ARCH_UPDATES=0
+[ -z "$AUR_UPDATES" ] && AUR_UPDATES=0
 
-PREVIOUS_UPDATES="$(cat "$UPDATE_FILE_TMP")"
-if [ "$UPDATES" -gt "$PREVIOUS_UPDATES" ]; then
-    if type dunstify >/dev/null; then
-        [ "$(dunstify -i "system-software-update" \
-            "Software Update" \
-            "$UPDATES update(s) available." \
-            --action="update,udpate")" = "update" ] && $TERMINAL --hold --class=float -e "paru" &
-    else
-        notify-send -i "system-software-update" "Software Update" "$UPDATES update(s) available."
-    fi
+TOTAL_UPDATES=$((ARCH_UPDATES + AUR_UPDATES))
+
+# Read previous count
+PREVIOUS_COUNT=$(cat "$UPDATE_FILE_TMP" 2>/dev/null || echo "0")
+
+# Show notification if new updates are available
+if [ "$TOTAL_UPDATES" -gt "$PREVIOUS_COUNT" ] 2>/dev/null; then
+    # Using notify-send (works with dunst)
+    notify-send -i "system-software-update" \
+        "📦 Software Updates Available" \
+        "There are $TOTAL_UPDATES updates ($ARCH_UPDATES Arch + $AUR_UPDATES AUR)" \
+        -u normal
 fi
-printf "%s\n" "$UPDATES" >"$UPDATE_FILE_TMP"
 
-if [ "$UPDATES" -gt 0 ]; then
-    printf "%s\n" "$UPDATES"
+# Save current count
+echo "$TOTAL_UPDATES" > "$UPDATE_FILE_TMP"
+
+# Output for polybar
+if [ "$TOTAL_UPDATES" -gt 0 ]; then
+    echo "$TOTAL_UPDATES"
 else
-    printf "\n"
+    echo ""
 fi
