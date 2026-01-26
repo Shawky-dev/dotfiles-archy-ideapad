@@ -46,7 +46,8 @@ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 # Start dunst notification daemon
 exec --no-startup-id dunst
 
-
+# Start greenclip clipboard manager
+exec --no-startup-id greenclip daemon
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -77,7 +78,8 @@ bindsym Print exec flameshot gui -p ~/Pictures/Screenshots/
 # Take a screenshot with OCR and extract text
 bindsym Shift+Print exec ~/scripts/screenshot-ocr.sh
 
-
+# Clipboard manager with rofi
+bindsym $mod+Shift+v exec greenclip print | ~/.config/rofi/text/type-1/launcher.sh | xclip -selection clipboard
 
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
