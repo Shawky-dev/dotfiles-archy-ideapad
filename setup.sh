@@ -52,6 +52,7 @@ sudo pacman -S --needed --noconfirm \
 echo -e "${BLUE}Installing AUR packages...${NC}"
 yay -S --needed --noconfirm \
     nerd-fonts-jetbrains-mono \
+    i3lock-color\
     oh-my-zsh-git \
     zsh-theme-powerlevel10k \
     visual-studio-code-bin
@@ -81,6 +82,19 @@ if [ -d ~/Pictures/wallpapers ] && [ -z "$(ls -A ~/Pictures/wallpapers 2>/dev/nu
 else
     echo "Wallpapers directory already has content. Skipping download."
 fi
+
+# Set a lockscreen wallpaper if betterlockscreen is installed
+if command -v betterlockscreen &> /dev/null; then
+    LOCK_IMG="$HOME/Pictures/wallpapers/Nighthawks.png"
+    if [ -f "$LOCK_IMG" ]; then
+        echo "Updating betterlockscreen background with $LOCK_IMG"
+        betterlockscreen -u "$LOCK_IMG"
+    else
+        echo "Image $LOCK_IMG not found — skipping betterlockscreen update"
+    fi
+fi
+
+
 
 # ===== 7. INSTALL ZSH PLUGINS MANUALLY =====
 echo -e "${BLUE}Installing ZSH plugins...${NC}"

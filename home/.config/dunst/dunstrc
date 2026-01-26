@@ -15,26 +15,29 @@
     icon_theme = "rose-pine-icons"
     corner_radius = 2
 
-    background = "#26233a"
-    foreground = "#e0def4"
+    background = "#1d2021"
+    foreground = "#d5c4a1"
+
 
 [urgency_low]
-    background = "#26273d"
-    highlight = "#31748f"
-    frame_color = "#31748f"
+    background = "#3c3836"
+    highlight = "#83a598"
+    frame_color = "#83a598"
     default_icon = "dialog-information"
-    format = "<b><span foreground='#31748f'>%s</span></b>\n%b"
+    format = "<b><span foreground='#83a598'>%s</span></b>\n%b"
+
 
 [urgency_normal]
-    background = "#362e3c"
-    highlight = "#f6c177"
-    frame_color = "#f6c177"
+    background = "#3c3836"
+    highlight = "#fabd2f"
+    frame_color = "#fabd2f"
     default_icon = "dialog-warning"
-    format = "<b><span foreground='#f6c177'>%s</span></b>\n%b"
+    format = "<b><span foreground='#fabd2f'>%s</span></b>\n%b"
+
 
 [urgency_critical]
-    background = "#35263d"
-    highlight = "#eb6f92"
-    frame_color = "#eb6f92"
+    background = "#3c3836"
+    highlight = "#fb4934"
+    frame_color = "#fb4934"
     default_icon = "dialog-error"
-    format = "<b><span foreground='#eb6f92'>%s</span></b>\n%b"
+    format = "<b><span foreground='#fb4934'>%s</span></b>\n%b"
