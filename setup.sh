@@ -35,7 +35,8 @@ sudo pacman -S --needed --noconfirm \
     breeze breeze-gtk breeze-icons \
     fastfetch bat fzf \
     python python-pip \
-    vlc
+    vlc\
+    flameshot tesseract tesseract-data-eng
 
 # ===== 2. I3 ESSENTIALS =====
 echo -e "${BLUE}Installing i3 packages...${NC}"
@@ -137,6 +138,17 @@ fi
 
 # Make any other shell scripts in .config executable
 find ~/.config -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
+
+#Make scripts in /scripts executable
+if [ -d ~/scripts ]; then
+    chmod +x ~/scripts/*.sh 2>/dev/null || true
+fi
+
+#create Pictures/Screenshots directory if not exists
+mkdir -p ~/Pictures/Screenshots
+
+#create Pictures/OCR directory if not exists
+mkdir -p ~/Pictures/OCR
 
 # ===== 9. FINAL MESSAGE =====
 echo -e "${GREEN}"
