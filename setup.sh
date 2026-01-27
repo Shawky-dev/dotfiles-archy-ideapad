@@ -37,7 +37,7 @@ sudo pacman -S --needed --noconfirm \
     python python-pip \
     vlc\
     flameshot tesseract tesseract-data-eng\
-    acpi
+    acpi acpi_call tlp tlp-rdw\
 
 # ===== 2. I3 ESSENTIALS =====
 echo -e "${BLUE}Installing i3 packages...${NC}"
