@@ -36,7 +36,8 @@ sudo pacman -S --needed --noconfirm \
     fastfetch bat fzf \
     python python-pip \
     vlc\
-    flameshot tesseract tesseract-data-eng
+    flameshot tesseract tesseract-data-eng\
+    acpi
 
 # ===== 2. I3 ESSENTIALS =====
 echo -e "${BLUE}Installing i3 packages...${NC}"
@@ -57,7 +58,8 @@ yay -S --needed --noconfirm \
     oh-my-zsh-git \
     zsh-theme-powerlevel10k \
     visual-studio-code-bin\
-    blueberry
+    blueberry\
+    optimus-manager-git\
 
 # ===== 5. TEXT EDITOR =====
 echo -e "${BLUE}Installing text editor...${NC}"
