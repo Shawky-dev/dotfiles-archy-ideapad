@@ -16,5 +16,6 @@ theme='style-3'
 
 ## Run
 rofi \
-    -dmenu -i -p "📋"\
+    -dmenu -i -p " "\
     -theme ${dir}/${theme}.rasi
+q
