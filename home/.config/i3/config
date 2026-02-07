@@ -172,6 +172,10 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+# swap workspaces between outputs
+bindsym $mod+Shift+s exec ~/scripts/swap-workspaces.sh
+
+
 
 #i3 ricing settings
 # Gaps and borders
