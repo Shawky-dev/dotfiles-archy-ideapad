@@ -28,4 +28,4 @@ else
 fi
 
 # Cleanup temporary image (optional)
-# rm "$TEMP_FILE"
+rm "$TEMP_FILE"
