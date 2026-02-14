@@ -80,3 +80,31 @@ eval "$(zoxide init --cmd cd zsh)"
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+
+
+
+
+####ROS###
+ros-start(){
+docker run -it \
+--name ros_noetic \
+--hostname localhost \
+--env="DISPLAY=$DISPLAY" \
+--volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+-v /home/$(whoami)/ros:/ros \
+--device /dev/dri \
+--device /dev/video0 \
+--network=host \
+osrf/ros:noetic-desktop-full \
+bash --rcfile /ros/.bashrc
+}
+
+
+ros-connect(){
+docker exec -ti ros_noetic bash --rcfile /ros/.bashrc
+}
+
+
+ros-clean(){
+docker rm ros_noetic
+}
