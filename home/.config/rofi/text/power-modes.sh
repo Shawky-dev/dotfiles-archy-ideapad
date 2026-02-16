@@ -140,7 +140,7 @@ RAPID_CHARGE_STATUS=$(get_rapid_charge)
 # Create the menu with Nerd Font icons
 CHOICE=$(echo -e "󰂎  Conservation: $CONSERVATION_STATUS\n󰓅  Performance: $PERFORMANCE_STATUS\n󱐋  Rapid Charge: $RAPID_CHARGE_STATUS\n󰁯  Refresh Status" | \
     rofi -dmenu -i -p "Power >" \
-    -theme ~/.config/rofi/text/power-modes/style-3.rasi)
+    -theme ~/.config/rofi/text/style-3.rasi)
 
 case "$CHOICE" in
     *"Conservation"*)
@@ -150,7 +150,7 @@ case "$CHOICE" in
         # Sub-menu for performance modes
         SUBCHOICE=$(echo -e "󰔏  Intelligent Cooling\n󰓅  Extreme Performance\n󰂎  Battery Saving" | \
             rofi -dmenu -i -p "Performance Mode >"\
-            -theme ~/.config/rofi/text/power-modes/style-3.rasi)
+            -theme ~/.config/rofi/text/style-3.rasi)
         case "$SUBCHOICE" in
             *"Intelligent"*) set_performance_mode "Intelligent" ;;
             *"Extreme"*) set_performance_mode "Extreme" ;;
