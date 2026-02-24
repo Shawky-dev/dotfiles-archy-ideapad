@@ -84,27 +84,24 @@ eval "$(zoxide init --cmd cd zsh)"
 
 
 
-####ROS###
-ros-start(){
+ros2-start(){
 docker run -it \
---name ros_noetic \
---hostname localhost \
---env="DISPLAY=$DISPLAY" \
---volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
--v /home/$(whoami)/ros:/ros \
+--rm \
+--name ros2 \
+--env DISPLAY=$DISPLAY \
+--env QT_X11_NO_MITSHM=1 \
+-v /tmp/.X11-unix:/tmp/.X11-unix \
+-v $HOME/ros2:/ros2 \
 --device /dev/dri \
---device /dev/video0 \
---network=host \
-osrf/ros:noetic-desktop-full \
-bash --rcfile /ros/.bashrc
+--network host \
+ros2-jazzy-dev \
+bash --rcfile /ros2/.bashrc
 }
 
-
-ros-connect(){
-docker exec -ti ros_noetic bash --rcfile /ros/.bashrc
+ros2-connect(){
+docker exec -ti ros2 bash --rcfile /ros2/.bashrc
 }
 
-
-ros-clean(){
-docker rm ros_noetic
+ros2-clean(){
+docker rm -f ros2
 }
