@@ -77,8 +77,8 @@ bindsym $mod+d exec ~/.config/rofi/launchers/type-4/launcher.sh
 
 bindsym $mod+Mod1+l exec ~/.config/rofi/powermenu/type-1/powermenu.sh
 
-# Take a normcap screenshot with OCR and save image
-bindsym Print exec flameshot gui -p ~/Pictures/Screenshots/
+# Take a normcap screenshot save image
+bindsym Print exec flameshot gui -p ~/Pictures/Screenshots/ -c2
 # Take a screenshot with OCR and extract text
 bindsym Shift+Print exec ~/scripts/screenshot-ocr.sh
 

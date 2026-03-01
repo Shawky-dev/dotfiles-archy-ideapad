@@ -85,19 +85,27 @@ eval "$(zoxide init --cmd cd zsh)"
 
 
 ros2-start(){
-docker run -it \
---rm \
---name ros2 \
---env DISPLAY=$DISPLAY \
---env QT_X11_NO_MITSHM=1 \
--v /tmp/.X11-unix:/tmp/.X11-unix \
--v $HOME/ros2:/ros2 \
---device /dev/dri \
---network host \
-ros2-jazzy-dev \
-bash --rcfile /ros2/.bashrc
-}
 
+# allow container GUI
+xhost +local:docker >/dev/null 2>&1
+
+if docker inspect ros2 >/dev/null 2>&1; then
+    docker start ros2 >/dev/null
+    docker exec -it ros2 bash --rcfile /ros2/.bashrc
+else
+  docker run -it \
+  --name ros2 \
+  --add-host archy-ideapad:127.0.1.1 \
+  --env DISPLAY=$DISPLAY \
+  --env QT_X11_NO_MITSHM=1 \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v $HOME/ros2:/ros2 \
+  --device /dev/dri \
+  --network host \
+  ros2-jazzy-dev \
+  bash --rcfile /ros2/.bashrc
+fi
+}
 ros2-connect(){
 docker exec -ti ros2 bash --rcfile /ros2/.bashrc
 }
