@@ -1,4 +1,17 @@
-fastfetch
+# ROS 2
+if [ -f /opt/ros/jazzy/setup.zsh ]; then
+  source /opt/ros/jazzy/setup.zsh
+else
+  source /opt/ros/jazzy/setup.bash
+fi
+
+# overlay workspace if built
+if [ -f /ros2/ws/install/setup.zsh ]; then
+  source /ros2/ws/install/setup.zsh
+elif [ -f /ros2/ws/install/setup.bash ]; then
+  source /ros2/ws/install/setup.bash
+fi
+
 ### POWERLEVEL10K INSTANT PROMPT ###############################################
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
