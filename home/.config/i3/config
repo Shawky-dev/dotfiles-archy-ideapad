@@ -83,7 +83,7 @@ bindsym Print exec flameshot gui -p ~/Pictures/Screenshots/ -c
 bindsym Shift+Print exec ~/scripts/screenshot-ocr.sh
 
 # Clipboard manager with rofi
-bindsym $mod+Shift+v exec greenclip print | ~/.config/rofi/text/clipboard.sh | xargs -r -d '\n' -I '{}' greenclip print '{}' | xclip -selection clipboard
+bindsym $mod+Shift+v exec greenclip print | ~/.config/rofi/text/clipboard.sh | xargs -r -d '\n' -I '{}' greenclip print '{}'
 
 # Cheatsheet selector with rofi
 bindsym $mod+Shift+h exec ~/.config/rofi/text/cheatsheet.sh

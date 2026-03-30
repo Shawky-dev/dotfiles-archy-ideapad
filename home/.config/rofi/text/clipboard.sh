@@ -18,4 +18,3 @@ theme='style-5'
 rofi \
     -dmenu -i -p " "\
     -theme ${dir}/${theme}.rasi
-q
