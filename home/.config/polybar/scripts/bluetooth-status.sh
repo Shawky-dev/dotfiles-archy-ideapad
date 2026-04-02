@@ -1,24 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 #
-# Requires bluetoothctl
+# Requires: bluetoothctl
 
-# Checks if bluetooth controller is powered on
 power_on() {
-    if bluetoothctl show | grep -q "Powered: yes"; then
-        return 0
-    else
-        return 1
-    fi
+    bluetoothctl show | grep -q "Powered: yes"
 }
 
-# Checks if a device is connected
 device_connected() {
-    device_info=$(bluetoothctl info "$1")
-    if echo "$device_info" | grep -q "Connected: yes"; then
-        return 0
-    else
-        return 1
-    fi
+    bluetoothctl info "$1" | grep -q "Connected: yes"
 }
 
 if power_on; then
@@ -36,10 +25,10 @@ if power_on; then
         fi
     done
     if [ $counter -eq 0 ]; then
-        echo "On"  # Changed from empty line
+        echo "On"
     else
-        echo ""  # Keep the newline
+        echo ""
     fi
 else
-    echo "Off"  # Always output something
+    echo "Off"
 fi

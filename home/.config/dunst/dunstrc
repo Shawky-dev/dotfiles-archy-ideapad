@@ -1,6 +1,6 @@
 [global]
 width = 200
-offset = 5x5
+offset = 5x40
 follow = mouse
 progress_bar_min_width = 80
 progress_bar_max_width = 180
