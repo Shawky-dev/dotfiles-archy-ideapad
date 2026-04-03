@@ -46,7 +46,6 @@ exec_always --no-startup-id xwallpaper --daemon --output all --zoom ~/Pictures/w
 
 # Start the policy kit authentication agent
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-
 # Start dunst notification daemon
 exec --no-startup-id dunst
 
