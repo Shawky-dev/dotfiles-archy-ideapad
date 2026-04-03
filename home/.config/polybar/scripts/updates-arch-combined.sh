@@ -18,14 +18,14 @@ TOTAL_UPDATES=$((ARCH_UPDATES + AUR_UPDATES))
 # Read previous count
 PREVIOUS_COUNT=$(cat "$UPDATE_FILE_TMP" 2>/dev/null || echo "0")
 
-# Show notification if new updates are available
-if [ "$TOTAL_UPDATES" -gt "$PREVIOUS_COUNT" ] 2>/dev/null; then
-    # Using notify-send (works with dunst)
-    notify-send -i "system-software-update" \
-        "📦 Software Updates Available" \
-        "There are $TOTAL_UPDATES updates ($ARCH_UPDATES Arch + $AUR_UPDATES AUR)" \
-        -u normal
-fi
+# # Show notification if new updates are available
+# if [ "$TOTAL_UPDATES" -gt "$PREVIOUS_COUNT" ] 2>/dev/null; then
+#     # Using notify-send (works with dunst)
+#     notify-send -i "system-software-update" \
+#         "📦 Software Updates Available" \
+#         "There are $TOTAL_UPDATES updates ($ARCH_UPDATES Arch + $AUR_UPDATES AUR)" \
+#         -u normal
+# fi
 
 # Save current count
 echo "$TOTAL_UPDATES" > "$UPDATE_FILE_TMP"
