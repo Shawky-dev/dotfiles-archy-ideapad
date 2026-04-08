@@ -18,28 +18,40 @@ declare -A ICON_MAP=(
 
 get_icon() {
     local player="$1"
-    case "${player,,}" in
-        *twitch*)
+    local title="$2"
+    local url="$3"
+    local player_key title_key url_key icon
+
+    player_key="${player,,}"
+    title_key="${title,,}"
+    url_key="${url,,}"
+
+    case "${player_key}|${title_key}|${url_key}" in
+        *twitch*|*twitch.tv*)
             echo ""
             ;;
-        *youtube*)
+        *anghami*)
+            echo ""
+            ;;
+        *youtube*|*youtu.be*|*youtube.com*)
             echo ""
             ;;
         *)
-            local icon="${ICON_MAP[$player]}"
+            icon="${ICON_MAP[$player_key]}"
             echo "${icon:-${ICON_MAP[default]}}"
             ;;
     esac
 }
 
 format_output() {
-    local player title artist formatted icon
+    local player title artist url formatted icon
 
     player=$(playerctl metadata --format '{{playerName}}' 2>/dev/null) || return
     [[ -z "$player" ]] && return
 
     title=$(playerctl metadata title 2>/dev/null)
     artist=$(playerctl metadata artist 2>/dev/null)
+    url=$(playerctl metadata xesam:url 2>/dev/null)
 
     [[ -z "$title" || "$title" == "null" ]] && return
 
@@ -53,8 +65,8 @@ format_output() {
         formatted=$(echo "$formatted" | fribidi | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
     fi
 
-    icon=$(get_icon "$player")
-    echo "${icon}${formatted}"
+    icon=$(get_icon "$player" "$title" "$url")
+    echo "${icon}  ${formatted}"
 }
 
 format_output
