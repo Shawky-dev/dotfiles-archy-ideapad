@@ -75,19 +75,22 @@ set_performance_mode() {
     fi
     
     case "$MODE" in
-        "Intelligent")
-            echo '\_SB_.GZFD.WMAA 0 0x2C 2' | sudo tee /proc/acpi/call > /dev/null
-            notify-send "󰔏 Performance Mode" "Set to Intelligent Cooling" -t 2000
-            ;;
         "Extreme")
-            echo '\_SB_.GZFD.WMAA 0 0x2C 3' | sudo tee /proc/acpi/call > /dev/null
-            notify-send "󰓅 Performance Mode" "Set to Extreme Performance" -t 2000
-            ;;
-        "Battery")
-            echo '\_SB_.GZFD.WMAA 0 0x2C 1' | sudo tee /proc/acpi/call > /dev/null
-            notify-send "󰂎 Performance Mode" "Set to Battery Saving" -t 2000
-            ;;
-    esac
+        echo '\_SB_.GZFD.WMAA 0 0x2C 3' | sudo tee /proc/acpi/call > /dev/null
+        sudo cpupower frequency-set -g performance   # add this
+        notify-send "󰓅 Performance Mode" "Set to Extreme Performance" -t 2000
+        ;;
+    "Intelligent")
+        echo '\_SB_.GZFD.WMAA 0 0x2C 2' | sudo tee /proc/acpi/call > /dev/null
+        sudo cpupower frequency-set -g schedutil     # add this
+        notify-send "󰔏 Performance Mode" "Set to Intelligent Cooling" -t 2000
+        ;;
+    "Battery")
+        echo '\_SB_.GZFD.WMAA 0 0x2C 1' | sudo tee /proc/acpi/call > /dev/null
+        sudo cpupower frequency-set -g powersave     # add this
+        notify-send "󰂎 Performance Mode" "Set to Battery Saving" -t 2000
+        ;;
+        esac
 }
 
 # Function to get rapid charge status

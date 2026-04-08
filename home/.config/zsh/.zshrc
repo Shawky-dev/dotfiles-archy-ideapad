@@ -74,6 +74,7 @@ alias c='clear'
 alias clipboard='xclip -selection clipboard'
 alias vncon='x11vnc -display :0 -auth guess -forever -loop -noxdamage -repeat -rfbauth ~/.vnc/passwd -rfbport 5900 & disown'
 alias vncoff='pkill -f x11vnc'
+alias nukedocker='~/scripts/nuke_docker.sh'
 
 ### INTEGRATIONS ###############################################################
 eval "$(fzf --zsh)"
