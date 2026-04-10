@@ -192,13 +192,20 @@ default_border pixel 2
 default_floating_border pixel 3
 
 # Colors
-client.background #1e1e20
-client.focused          #56737a #1e1e20 #56737a #56737a #56737a
-client.unfocused        #56737a #1e1e20 #56737a #2c5159 #2c5159
-client.focused_inactive #56737a #1e1e20 #56737a #2c5159 #2c5159
-client.urgent           #56737a #1e1e20 #56737a #2c5159 #2c5159
-client.placeholder      #56737a #1e1e20 #56737a #2c5159 #2c5159
+#client.background #1e1e20
+#client.focused          #56737a #1e1e20 #56737a #56737a #56737a
+#client.unfocused        #56737a #1e1e20 #56737a #2c5159 #2c5159
+#client.focused_inactive #56737a #1e1e20 #56737a #2c5159 #2c5159
+#client.urgent           #56737a #1e1e20 #56737a #2c5159 #2c5159
+#client.placeholder      #56737a #1e1e20 #56737a #2c5159 #2c5159
 
+# Colors
+client.focused          #962b1f #1d2021 #d5c4a1 #962b1f #962b1f
+client.unfocused        #665c54 #1d2021 #665c54 #665c54 #665c54
+client.focused_inactive #665c54 #1d2021 #665c54 #665c54 #665c54
+client.urgent           #962b1f #1d2021 #d5c4a1 #962b1f #962b1f
+client.placeholder      #665c54 #1d2021 #665c54 #665c54 #665c54
+client.background       #1d2021
 gaps top 35 
 
 # Float Zathura PDF viewer for cheatsheets
