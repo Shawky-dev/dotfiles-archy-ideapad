@@ -11,10 +11,27 @@ if [[ -f "/opt/homebrew/bin/brew" ]]; then
 fi
 
 ### OH MY ZSH ###################################################################
-export ZSH="$HOME/.oh-my-zsh"
+if [[ -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]]; then
+  export ZSH="$HOME/.oh-my-zsh"
+elif [[ -f "/usr/share/oh-my-zsh/oh-my-zsh.sh" ]]; then
+  export ZSH="/usr/share/oh-my-zsh"
+else
+  export ZSH="$HOME/.oh-my-zsh"
+fi
+
+if [[ "$ZSH" == "/usr/share/oh-my-zsh" && -d "$HOME/.oh-my-zsh/custom" ]]; then
+  export ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
+fi
 
 # Load Powerlevel10k theme
-ZSH_THEME="powerlevel10k/powerlevel10k"
+if [[ -f "${ZSH_CUSTOM:-$ZSH/custom}/themes/powerlevel10k/powerlevel10k.zsh-theme" ]]; then
+  ZSH_THEME="powerlevel10k/powerlevel10k"
+elif [[ -f "/usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme" ]]; then
+  ZSH_THEME=""
+  source "/usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme"
+else
+  ZSH_THEME=""
+fi
 
 # OMZ plugins (translated from your Zinit plugins + snippets)
 plugins=(
@@ -27,17 +44,22 @@ plugins=(
   command-not-found
   zsh-syntax-highlighting
   zsh-autosuggestions
-  zsh-completions
 )
 
-source $ZSH/oh-my-zsh.sh
+if [[ -d /usr/share/zsh/site-functions ]]; then
+  fpath=(/usr/share/zsh/site-functions $fpath)
+fi
+
+source "$ZSH/oh-my-zsh.sh"
 
 ### ADDITIONAL MANUAL PLUGINS ###################################################
 
 # fzf-tab (OMZ does not include this plugin)
 # Make sure it is cloned manually:
 # git clone https://github.com/Aloxaf/fzf-tab ~/.oh-my-zsh/custom/plugins/fzf-tab
-source ~/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.plugin.zsh
+if [[ -f "${ZSH_CUSTOM:-$ZSH/custom}/plugins/fzf-tab/fzf-tab.plugin.zsh" ]]; then
+  source "${ZSH_CUSTOM:-$ZSH/custom}/plugins/fzf-tab/fzf-tab.plugin.zsh"
+fi
 
 ### COMPLETION INIT #############################################################
 autoload -Uz compinit && compinit

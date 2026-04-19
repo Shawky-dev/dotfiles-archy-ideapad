@@ -1,174 +1,296 @@
-#!/bin/bash
-# Dotfiles package installer for Shawky's i3 Setup
-# Only installs what's actually needed from the dotfiles
+#!/usr/bin/env bash
 
-set -e
+# Dotfiles installer for Shawky's Arch + i3 setup.
+# Installs packages actually referenced by the repo, optional AUR extras,
+# fonts used by the active themes, wallpapers, and executable bits.
 
-# Colors
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-echo -e "${GREEN}Installing dotfiles packages...${NC}"
+PACMAN_PACKAGES=(
+    base-devel
+    git
+    curl
+    wget
+    unzip
+    bc
+    jq
+    fribidi
+    xclip
+    xsel
+    xdotool
+    xorg-xhost
+    xorg-xrandr
+    xorg-setxkbmap
+    dex
+    xss-lock
+    gnome-keyring
+    pipewire-pulse
+    pavucontrol
+    playerctl
+    polkit-gnome
+    network-manager-applet
+    blueman
+    bluez-utils
+    i3-wm
+    picom
+    rofi
+    polybar
+    dunst
+    kitty
+    xwallpaper
+    zsh
+    zsh-completions
+    zoxide
+    fzf
+    fastfetch
+    bat
+    neovim
+    python
+    python-pip
+    pkgfile
+    xdg-user-dirs
+    viewnior
+    brightnessctl
+    flameshot
+    maim
+    tesseract
+    tesseract-data-eng
+    ffmpeg
+    zathura
+    vlc
+    acpi
+    acpi_call
+    cpupower
+    tlp
+    tlp-rdw
+    mpc
+    mpd
+    docker
+    x11vnc
+    ttf-iosevka-nerd
+    ttf-jetbrains-mono-nerd
+    ttf-nerd-fonts-symbols
+    noto-fonts
+    noto-fonts-extra
+    noto-fonts-emoji
+    breeze
+    breeze-gtk
+    breeze-icons
+)
 
-# Check yay
-if ! command -v yay &> /dev/null; then
-    echo -e "${RED}yay not installed. Install it first.${NC}"
-    exit 1
-fi
+REQUIRED_AUR_PACKAGES=(
+    greenclip
+    i3lock-color
+    betterlockscreen
+    oh-my-zsh-git
+    zsh-theme-powerlevel10k
+    visual-studio-code-bin
+    blueberry
+    optimus-manager-git
+)
 
-# Update
-echo "Updating system..."
-sudo pacman -Syu --noconfirm
+OPTIONAL_AUR_PACKAGES=(
+    caffeine-ng
+    ttf-feather
+    ttf-grape-nuts
+)
 
-# ===== 1. CORE DEPENDENCIES =====
-echo -e "${BLUE}Installing core dependencies...${NC}"
-sudo pacman -S --needed --noconfirm \
-    git curl \
-    xorg-xrandr xclip xsel \
-    fribidi jq bc xdotool \
-    pulseaudio pavucontrol playerctl polkit-gnome \
-    network-manager-applet blueman \
-    ttf-jetbrains-mono-nerd ttf-font-awesome noto-fonts noto-fonts-emoji \
-    breeze breeze-gtk breeze-icons \
-    fastfetch bat fzf \
-    python python-pip \
-    vlc\
-    flameshot tesseract tesseract-data-eng\
-    acpi acpi_call tlp tlp-rdw\
+print_section() {
+    echo -e "${BLUE}$1${NC}"
+}
 
-# ===== 2. I3 ESSENTIALS =====
-echo -e "${BLUE}Installing i3 packages...${NC}"
-sudo pacman -S --needed --noconfirm \
-    i3-gaps picom rofi polybar dunst kitty xwallpaper
+warn() {
+    echo -e "${YELLOW}$1${NC}"
+}
 
-# ===== 3. ZSH AND SHELL TOOLS =====
-echo -e "${BLUE}Installing ZSH and shell tools...${NC}"
-sudo pacman -S --needed --noconfirm \
-    zsh zsh-completions \
-    fzf zoxide
-
-# ===== 4. AUR PACKAGES =====
-echo -e "${BLUE}Installing AUR packages...${NC}"
-yay -S --needed --noconfirm \
-    nerd-fonts-jetbrains-mono \
-    i3lock-color\
-    oh-my-zsh-git \
-    zsh-theme-powerlevel10k \
-    visual-studio-code-bin\
-    blueberry\
-    optimus-manager-git\
-
-# ===== 5. TEXT EDITOR =====
-echo -e "${BLUE}Installing text editor...${NC}"
-sudo pacman -S --needed --noconfirm neovim
-
-# ===== 6. CREATE DIRECTORIES & DOWNLOAD WALLPAPERS =====
-echo -e "${BLUE}Creating necessary directories...${NC}"
-mkdir -p ~/Pictures/wallpapers
-
-echo -e "${BLUE}Downloading wallpapers from GitHub...${NC}"
-# Check if wallpapers directory is empty or doesn't exist
-if [ -d ~/Pictures/wallpapers ] && [ -z "$(ls -A ~/Pictures/wallpapers 2>/dev/null)" ]; then
-    echo "Downloading wallpapers from Shawky-dev/wallpapers..."
-    # Clone the wallpapers repo
-    git clone https://github.com/Shawky-dev/wallpapers.git /tmp/wallpapers-temp
-    
-    # Copy all wallpapers to the wallpapers directory
-    cp -r /tmp/wallpapers-temp/* ~/Pictures/wallpapers/ 2>/dev/null || true
-    
-    # Clean up temp directory
-    rm -rf /tmp/wallpapers-temp
-    
-    echo "Wallpapers downloaded to ~/Pictures/wallpapers/"
-else
-    echo "Wallpapers directory already has content. Skipping download."
-fi
-
-# Set a lockscreen wallpaper if betterlockscreen is installed
-if command -v betterlockscreen &> /dev/null; then
-    LOCK_IMG="$HOME/Pictures/wallpapers/Nighthawks.png"
-    if [ -f "$LOCK_IMG" ]; then
-        echo "Updating betterlockscreen background with $LOCK_IMG"
-        betterlockscreen -u "$LOCK_IMG"
-    else
-        echo "Image $LOCK_IMG not found — skipping betterlockscreen update"
+ensure_yay() {
+    if command -v yay >/dev/null 2>&1; then
+        return
     fi
-fi
 
+    print_section "Installing yay..."
+    sudo pacman -S --needed --noconfirm base-devel git
 
+    local build_dir="/tmp/yay"
+    rm -rf "$build_dir"
+    git clone https://aur.archlinux.org/yay.git "$build_dir"
+    (
+        cd "$build_dir"
+        makepkg -si --noconfirm
+    )
+}
 
-# ===== 7. INSTALL ZSH PLUGINS MANUALLY =====
-echo -e "${BLUE}Installing ZSH plugins...${NC}"
-ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
+install_pacman_packages() {
+    print_section "Updating system..."
+    sudo pacman -Syu --noconfirm
 
-# zsh-syntax-highlighting
-if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
-    echo "Installing zsh-syntax-highlighting..."
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
-fi
+    print_section "Installing official repo packages..."
+    sudo pacman -S --needed --noconfirm "${PACMAN_PACKAGES[@]}"
+}
 
-# zsh-autosuggestions
-if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
-    echo "Installing zsh-autosuggestions..."
-    git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
-fi
+install_aur_packages() {
+    print_section "Installing required AUR packages..."
+    yay -S --needed --noconfirm "${REQUIRED_AUR_PACKAGES[@]}"
 
-# fzf-tab (for tab completion with fzf)
-if [ ! -d "$ZSH_CUSTOM/plugins/fzf-tab" ]; then
-    echo "Installing fzf-tab..."
-    git clone https://github.com/Aloxaf/fzf-tab.git $ZSH_CUSTOM/plugins/fzf-tab
-fi
+    print_section "Installing optional AUR packages when available..."
+    local pkg
+    for pkg in "${OPTIONAL_AUR_PACKAGES[@]}"; do
+        if yay -S --needed --noconfirm "$pkg"; then
+            :
+        else
+            warn "Skipping optional AUR package: $pkg"
+        fi
+    done
+}
 
-# ===== 8. MAKE ALL SCRIPTS EXECUTABLE =====
-echo -e "${BLUE}Making all scripts executable...${NC}"
+prepare_zsh_layout() {
+    print_section "Preparing Oh My Zsh layout..."
 
-# Make polybar scripts executable
-if [ -d ~/.config/polybar/scripts ]; then
-    chmod +x ~/.config/polybar/scripts/*.sh 2>/dev/null || true
-fi
+    if [ ! -e "$HOME/.oh-my-zsh" ] && [ -d /usr/share/oh-my-zsh ]; then
+        ln -s /usr/share/oh-my-zsh "$HOME/.oh-my-zsh"
+    fi
 
-if [ -f ~/.config/polybar/launch.sh ]; then
-    chmod +x ~/.config/polybar/launch.sh
-fi
+    local zsh_custom="$HOME/.oh-my-zsh/custom"
+    mkdir -p "$zsh_custom/plugins"
 
-# Make rofi scripts executable
-if [ -d ~/.config/rofi ]; then
-    find ~/.config/rofi -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
-fi
+    if [ ! -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ] && [ -d /usr/share/oh-my-zsh ]; then
+        warn "~/.oh-my-zsh exists without the core files; using /usr/share/oh-my-zsh and keeping custom plugins in ~/.oh-my-zsh/custom."
+    fi
 
-# Make any other shell scripts in .config executable
-find ~/.config -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true
+    if [ ! -d "$zsh_custom/plugins/zsh-syntax-highlighting" ]; then
+        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
+            "$zsh_custom/plugins/zsh-syntax-highlighting"
+    fi
 
-#Make scripts in /scripts executable
-if [ -d ~/scripts ]; then
-    chmod +x ~/scripts/*.sh 2>/dev/null || true
-fi
+    if [ ! -d "$zsh_custom/plugins/zsh-autosuggestions" ]; then
+        git clone https://github.com/zsh-users/zsh-autosuggestions.git \
+            "$zsh_custom/plugins/zsh-autosuggestions"
+    fi
 
-#create Pictures/Screenshots directory if not exists
-mkdir -p ~/Pictures/Screenshots
+    if [ ! -d "$zsh_custom/plugins/fzf-tab" ]; then
+        git clone https://github.com/Aloxaf/fzf-tab.git \
+            "$zsh_custom/plugins/fzf-tab"
+    fi
+}
 
-#create Pictures/OCR directory if not exists
-mkdir -p ~/Pictures/OCR
+prepare_directories() {
+    print_section "Creating runtime directories..."
 
-# ===== 9. FINAL MESSAGE =====
-echo -e "${GREEN}"
-echo "================================================"
-echo "INSTALLATION COMPLETE!"
-echo "================================================"
-echo -e "${NC}"
-echo "✅ All packages installed"
-echo "✅ Wallpapers downloaded from GitHub"
-echo "✅ All scripts made executable"
-echo ""
-echo "Next steps:"
-echo "1. Copy your dotfiles to ~/.config/"
-echo "2. Scripts are already made executable for you"
-echo "3. Wallpapers are already in ~/Pictures/wallpapers/"
-echo "4. Log out and back in for ZSH to take effect"
-echo "5. Run 'p10k configure' to setup Powerlevel10k theme"
-echo ""
-echo -e "${YELLOW}Note: After copying dotfiles, restart i3 with Mod+Shift+R${NC}"
-echo -e "${YELLOW}Wallpaper repo: https://github.com/Shawky-dev/wallpapers${NC}"
+    mkdir -p \
+        "$HOME/Pictures/wallpapers" \
+        "$HOME/Pictures/Screenshots" \
+        "$HOME/Pictures/OCR" \
+        "$HOME/.local/share/cheatsheets"
+
+    xdg-user-dirs-update || true
+    fc-cache -fv >/dev/null 2>&1 || true
+}
+
+download_wallpapers() {
+    print_section "Downloading wallpapers if needed..."
+
+    if [ -d "$HOME/Pictures/wallpapers" ] && [ -n "$(ls -A "$HOME/Pictures/wallpapers" 2>/dev/null)" ]; then
+        echo "Wallpaper directory already has content. Skipping download."
+        return
+    fi
+
+    local tmp_dir="/tmp/wallpapers-temp"
+    rm -rf "$tmp_dir"
+    git clone https://github.com/Shawky-dev/wallpapers.git "$tmp_dir"
+    cp -r "$tmp_dir"/. "$HOME/Pictures/wallpapers/"
+    rm -rf "$tmp_dir"
+
+    echo "Wallpapers downloaded to $HOME/Pictures/wallpapers/"
+}
+
+update_lockscreen() {
+    if ! command -v betterlockscreen >/dev/null 2>&1; then
+        return
+    fi
+
+    local lock_img="$HOME/Pictures/wallpapers/Nighthawks.png"
+    if [ -f "$lock_img" ]; then
+        print_section "Updating betterlockscreen background..."
+        betterlockscreen -u "$lock_img"
+    else
+        warn "Lockscreen image not found at $lock_img"
+    fi
+}
+
+chmod_repo_scripts() {
+    print_section "Making repo scripts executable..."
+
+    find "$ROOT_DIR" -type f \
+        \( -name "*.sh" -o -path "*/scripts/*" \) \
+        -exec chmod +x {} +
+}
+
+chmod_deployed_scripts() {
+    print_section "Making deployed scripts executable when present..."
+
+    if [ -d "$HOME/.config" ]; then
+        find "$HOME/.config" -type f -name "*.sh" -exec chmod +x {} + 2>/dev/null || true
+    fi
+
+    if [ -d "$HOME/scripts" ]; then
+        find "$HOME/scripts" -type f -exec chmod +x {} + 2>/dev/null || true
+    fi
+}
+
+set_default_shell() {
+    local zsh_path
+    zsh_path="$(command -v zsh)"
+
+    if [ -z "$zsh_path" ]; then
+        warn "zsh is not installed; skipping default shell change."
+        return
+    fi
+
+    if [ "${SHELL:-}" = "$zsh_path" ]; then
+        echo "Default shell is already set to zsh."
+        return
+    fi
+
+    print_section "Setting zsh as the default shell..."
+    chsh -s "$zsh_path" "$USER"
+}
+
+print_summary() {
+    echo -e "${GREEN}"
+    echo "================================================"
+    echo "INSTALLATION COMPLETE"
+    echo "================================================"
+    echo -e "${NC}"
+    echo "Installed packages used by the i3, polybar, rofi, zsh, and helper scripts."
+    echo "Installed the main Nerd Fonts and Noto fonts referenced by the repo."
+    echo "Ensured script execute bits are set in both the repo and deployed config paths."
+    echo
+    echo "Next steps:"
+    echo "1. Copy or stow the dotfiles from $ROOT_DIR/home into \$HOME."
+    echo "2. Log out and back in so the shell, fonts, and desktop services fully refresh."
+    echo "3. Run 'p10k configure' if you want to regenerate your prompt."
+    echo
+    warn "Optional theme fonts such as feather/Grape Nuts are attempted from AUR and may be skipped if unavailable."
+}
+
+echo -e "${GREEN}Installing dotfiles packages and runtime dependencies...${NC}"
+
+ensure_yay
+install_pacman_packages
+install_aur_packages
+prepare_zsh_layout
+prepare_directories
+download_wallpapers
+update_lockscreen
+chmod_repo_scripts
+chmod_deployed_scripts
+set_default_shell
+print_summary
