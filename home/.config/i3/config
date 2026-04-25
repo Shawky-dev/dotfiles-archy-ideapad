@@ -52,7 +52,7 @@ exec --no-startup-id dunst
 # Start greenclip clipboard manager
 exec --no-startup-id greenclip daemon
 
-exec --no-startup-id caffeine
+exec --no-startup-id caffeine W
 
 exec --no-startup-id eval $(gnome-keyring-daemon --start)
 
@@ -71,6 +71,10 @@ bindsym $mod+Return exec kitty
 
 # kill focused window
 bindsym $mod+q kill
+
+#change language layout
+bindsym $mod+grave exec --no-startup-id setxkbmap -layout us && setxkbmap -layout us,ara -option terminate:ctrl_alt_bksp
+
 
 # start dmenu (a program launcher)
 # bindsym $mod+d exec --no-startup-id dmenu_run
