@@ -139,3 +139,6 @@ ros2-connect(){
 ros2-clean(){
   docker rm -f ros2
 }
+
+# Created by `pipx` on 2026-04-29 08:59:54
+export PATH="$PATH:/home/shawky/.local/bin"

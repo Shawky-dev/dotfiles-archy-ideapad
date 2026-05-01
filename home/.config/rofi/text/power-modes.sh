@@ -6,7 +6,7 @@
 HELPER="${HOME}/scripts/lenovo_power_ctl.sh"
 
 require_passwordless_sudo() {
-    if sudo -n true 2>/dev/null; then
+    if sudo -n "$HELPER" get-conservation >/dev/null 2>&1; then
         return 0
     fi
 
