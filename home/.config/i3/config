@@ -26,6 +26,9 @@ exec --no-startup-id dex --autostart --environment i3
 #for ROS development, allow root to access X server
 exec --no-startup-id xhost +SI:localuser:root
 
+#keyring daemon
+exec --no-startup-id gnome-keyring-daemon --start --components=secrets
+
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.

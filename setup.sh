@@ -84,6 +84,9 @@ PACMAN_PACKAGES=(
     breeze
     breeze-gtk
     breeze-icons
+    gnome-keyring
+    libsecret
+    seahorse
 )
 
 REQUIRED_AUR_PACKAGES=(
