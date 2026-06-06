@@ -53,7 +53,7 @@ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id dunst
 
 # Start greenclip clipboard manager
-exec --no-startup-id greenclip daemon
+exec --no-startup-id copyq
 
 exec --no-startup-id caffeine W
 
@@ -93,8 +93,7 @@ bindsym Print exec flameshot gui -p ~/Pictures/Screenshots/ -c
 bindsym Shift+Print exec ~/scripts/screenshot-ocr.sh
 
 # Clipboard manager with rofi
-bindsym $mod+Shift+v exec greenclip print | ~/.config/rofi/text/clipboard.sh | xargs -r -d '\n' -I '{}' greenclip print '{}'
-
+bindsym $mod+Shift+v exec ~/.config/rofi/text/clipboard.sh
 # Cheatsheet selector with rofi
 bindsym $mod+Shift+h exec ~/.config/rofi/text/cheatsheet.sh
 
