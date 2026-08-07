@@ -59,6 +59,9 @@ exec --no-startup-id caffeine W
 
 exec --no-startup-id eval $(gnome-keyring-daemon --start)
 
+#start opentabletdriver
+exec --no-startup-id systemctl --user start opentabletdriver.service
+
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
@@ -75,9 +78,8 @@ bindsym $mod+Return exec kitty
 # kill focused window
 bindsym $mod+q kill
 
-#change language layout
-bindsym $mod+grave exec --no-startup-id setxkbmap -layout us && setxkbmap -layout us,ara -option terminate:ctrl_alt_bksp
-
+#change language layout and apply Caps Lock remapping
+exec_always --no-startup-id sh -c 'setxkbmap -layout "us,ara" -option "grp:ctrl_alt_toggle" && xmodmap ~/.Xmodmap'
 
 # start dmenu (a program launcher)
 # bindsym $mod+d exec --no-startup-id dmenu_run

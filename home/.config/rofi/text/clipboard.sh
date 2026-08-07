@@ -37,5 +37,6 @@ rofi = ['rofi', '-dmenu', '-i', '-p', ' ', '-format', 'i',
 p = sp.run(rofi, input='\n'.join(display), encoding='utf-8', stdout=sp.PIPE)
 
 if p.returncode == 0:
-    idx = p.stdout.strip()
-    sp.run(f'copyq select({idx});', shell=True)
+    idx = int(p.stdout.strip())
+    result = sp.run(['copyq', 'read', str(idx)], stdout=sp.PIPE)
+    sp.run(['copyq', 'copy', '-'], input=result.stdout, stdout=sp.PIPE)
