@@ -78,9 +78,9 @@ bindsym $mod+Return exec kitty
 # kill focused window
 bindsym $mod+q kill
 
-#change language layout and apply Caps Lock remapping
-exec_always --no-startup-id sh -c 'setxkbmap -layout "us,ara" -option "grp:ctrl_alt_toggle" && xmodmap ~/.Xmodmap'
-
+#change language layout and apply Caps Lock -> Ctrl remapping
+exec_always --no-startup-id setxkbmap -layout "us,ara" -option "" -option "grp:shifts_toggle,caps:ctrl_modifier"
+        
 # start dmenu (a program launcher)
 # bindsym $mod+d exec --no-startup-id dmenu_run
 

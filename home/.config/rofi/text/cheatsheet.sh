@@ -14,7 +14,7 @@
 dir="$HOME/.config/rofi/text/"
 theme='style-3'
 
-DIR="$HOME/.local/share/cheatsheets"
+DIR="$HOME/Documents/cheatsheets"
 
 # Get list of files
 selected=$(ls "$DIR" | rofi \
