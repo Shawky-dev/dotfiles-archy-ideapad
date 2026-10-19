@@ -62,8 +62,8 @@ exec --no-startup-id eval $(gnome-keyring-daemon --start)
 #start opentabletdriver
 exec --no-startup-id systemctl --user start opentabletdriver.service
 
-# Volume keys (wpctl -l 1.0 caps at 100%; pactl let it climb past that)
-bindsym XF86AudioRaiseVolume exec --no-startup-id wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 10%+
+# Volume keys (wpctl -l 2.0 caps at 200%; above 100% is software boost and can clip)
+bindsym XF86AudioRaiseVolume exec --no-startup-id wpctl set-volume -l 2.0 @DEFAULT_AUDIO_SINK@ 10%+
 bindsym XF86AudioLowerVolume exec --no-startup-id wpctl set-volume @DEFAULT_AUDIO_SINK@ 10%-
 bindsym XF86AudioMute exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 bindsym XF86AudioMicMute exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
