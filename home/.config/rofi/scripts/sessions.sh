@@ -249,12 +249,15 @@ def do_save(i3, name):
     STORE.mkdir(parents=True, exist_ok=True)
     session, skipped = capture(i3)
     session_path(name).write_text(json.dumps(session, indent=2))
-    notify(f'Saved "{name}"', summary(name) + (f"\nskipped: {', '.join(skipped)}" if skipped else ''))
+    notify(f'󰆓  Saved {name}',
+           app_icons(session['windows']) + (f"\nskipped: {escape(', '.join(skipped))}" if skipped else ''))
 
 
 def do_restore(i3, name):
-    missing = restore(i3, load(name))
-    notify(f'Restored "{name}"', f"didn't appear: {', '.join(missing)}" if missing else '')
+    session = load(name)
+    icons = app_icons(session['windows'])  # before restore(), which consumes the window list
+    missing = restore(i3, session)
+    notify(f'󰕰  Restored {name}', f"didn't come back: {escape(', '.join(missing))}" if missing else icons)
 
 
 def rofi(lines, prompt, *args):
@@ -303,7 +306,7 @@ def menu(i3):
         do_save(i3, name)
     elif code == 11 and confirm(f'Delete "{name}"?'):
         session_path(name).unlink()
-        notify(f'Deleted "{name}"')
+        notify(f'󰆴  Deleted {name}')
 
 
 def selftest():
