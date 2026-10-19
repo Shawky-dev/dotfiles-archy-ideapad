@@ -1,0 +1,95 @@
+/**
+ * Rofi : Workspace sessions menu (scripts/sessions.sh)
+ * Grimwood palette; the red accent matches the focused i3 window border.
+ **/
+
+@import "~/.config/rofi/colors/grimwood.rasi"
+
+* {
+    font:             "Iosevka Nerd Font Mono 12";
+    accent:           #962b1f;   /* i3 client.focused border */
+    surface:          @background-alt;
+    subtle:           #a89984;
+    background-color: transparent;
+    text-color:       @foreground;
+}
+
+window {
+    transparency:     "real";
+    location:         center;
+    anchor:           center;
+    width:            560px;
+    border:           2px solid;
+    border-color:     @accent;
+    border-radius:    5px;   /* picom corner-radius */
+    background-color: @background;
+}
+
+mainbox {
+    padding:  20px;
+    spacing:  14px;
+    children: [ "prompt", "inputbar", "listview", "message" ];
+}
+
+/* Title line; its text is rofi's -p prompt */
+prompt {
+    font:       "Iosevka Nerd Font Mono Bold 13";
+    text-color: @foreground;
+    padding:    0px 4px;
+}
+
+/* Search bar */
+inputbar {
+    padding:          10px 16px;
+    spacing:          12px;
+    border-radius:    5px;
+    background-color: @surface;
+    children:         [ "textbox-search", "entry" ];
+}
+textbox-search {
+    content:    "󰍉";
+    expand:     false;
+    text-color: @subtle;
+}
+entry {
+    placeholder:       "search sessions...";
+    placeholder-color: @subtle;
+    cursor:            text;
+}
+
+listview {
+    lines:        6;
+    dynamic:      true;
+    fixed-height: false;
+    scrollbar:    false;
+    spacing:      4px;
+}
+
+element {
+    padding:       10px 14px;
+    border:        0px 0px 0px 3px;
+    border-radius: 4px;
+    border-color:  transparent;
+    cursor:        pointer;
+}
+element normal.normal, element alternate.normal {
+    background-color: transparent;
+}
+/* Selected row: raised surface with an accent bar on the left */
+element selected.normal {
+    background-color: @surface;
+    border-color:     @accent;
+}
+element-text {
+    text-color:     inherit;
+    highlight:      bold #fabd2f;
+    vertical-align: 0.5;
+}
+
+message {
+    padding: 0px 4px;
+}
+textbox {
+    text-color: @subtle;
+    markup:     true;
+}

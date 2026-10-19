@@ -18,11 +18,12 @@ import shlex
 import shutil
 import subprocess as sp
 import sys
+from html import escape
 from pathlib import Path
 
 import i3ipc
 
-THEME = os.path.expanduser('~/.config/rofi/themes/menu.rasi')
+THEME = os.path.expanduser('~/.config/rofi/themes/sessions.rasi')
 STORE = Path(os.environ.get('XDG_DATA_HOME', Path.home() / '.local/share')) / 'i3-sessions'
 TIMEOUT = 20  # seconds to wait for restored windows to appear
 
@@ -246,7 +247,7 @@ def rofi(lines, prompt, *args):
 
 
 def confirm(question):
-    _, ans = rofi(['Yes', 'No'], 'Confirmation', '-mesg', question, '-no-custom',
+    _, ans = rofi(['Yes', 'No'], 'Confirmation', '-mesg', question, '-no-custom', '-selected-row', '1',
                   '-theme-str', 'window {width: 250px;}',
                   '-theme-str', 'mainbox {children: [ "message", "listview" ];}',
                   '-theme-str', 'listview {columns: 2; lines: 1;}',
@@ -257,25 +258,27 @@ def confirm(question):
 
 def menu(i3):
     names = sessions()
-    lines = ['󰐕  Save current…'] + [f'{n}\t{summary(n)}' for n in names]
-    code, idx = rofi(lines, 'Sessions >', '-format', 'i', '-no-custom',
-                     '-display-columns', '1,2', '-display-column-separator', '\t',
-                     '-mesg', 'Enter restore · Ctrl+s overwrite · Shift+Del delete',
+    dim = lambda s: f'<span alpha="50%">{escape(s)}</span>'
+    width = max(map(len, names), default=0)
+    lines = [f'󰕰  {escape(n.ljust(width))}   {dim(summary(n))}' for n in names]
+    lines.append(f'󰐕  {dim("Save current windows…")}')
+    code, idx = rofi(lines, '󰕰  Workspace sessions', '-format', 'i', '-no-custom', '-markup-rows',
+                     '-mesg', 'enter restore  ·  ctrl+s overwrite  ·  shift+del delete',
                      '-kb-delete-entry', '', '-kb-custom-1', 'Control+s', '-kb-custom-2', 'Shift+Delete',
-                     '-theme-str', 'window {width: 600px;}')
+                     '-theme-str', f'listview {{lines: {min(len(lines), 8)};}}')
     if code not in (0, 10, 11) or not idx.isdigit():
         return
     i = int(idx)
 
-    if i == 0:
-        _, name = rofi([], 'Name >', '-theme-str', 'entry {placeholder: "session name...";}',
+    if i == len(names):
+        _, name = rofi([], '󰐕  Save current windows', '-theme-str', 'entry {placeholder: "session name...";}',
                        '-theme-str', 'listview {enabled: false;}')
         name = clean_name(name)
         if name and (name not in names or confirm(f'Overwrite "{name}"?')):
             do_save(i3, name)
         return
 
-    name = names[i - 1]
+    name = names[i]
     if code == 0:
         do_restore(i3, name)
     elif code == 10 and confirm(f'Overwrite "{name}"?'):
