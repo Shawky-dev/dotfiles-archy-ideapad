@@ -90,6 +90,8 @@ bindsym $mod+d exec ~/.config/rofi/scripts/launcher.sh
 bindsym $mod+Mod1+l exec ~/.config/rofi/scripts/powermenu.sh
 # scripts menu (search & run your scripts)
 bindsym $mod+x exec --no-startup-id ~/.config/rofi/scripts/scripts-menu.sh
+# Workspace sessions (save/restore open windows) with rofi
+bindsym $mod+Shift+w exec --no-startup-id ~/.config/rofi/scripts/sessions.sh
 
 # Take a normcap screenshot save image
 bindsym Print exec flameshot gui -p ~/Pictures/Screenshots/ -c

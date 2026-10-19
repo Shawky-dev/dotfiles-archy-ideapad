@@ -88,6 +88,7 @@ PACMAN_PACKAGES=(
     libsecret
     seahorse
     copyq
+    python-i3ipc
 )
 
 REQUIRED_AUR_PACKAGES=(
@@ -191,7 +192,8 @@ prepare_directories() {
         "$HOME/Pictures/wallpapers" \
         "$HOME/Pictures/Screenshots" \
         "$HOME/Pictures/OCR" \
-        "$HOME/.local/share/cheatsheets"
+        "$HOME/.local/share/cheatsheets" \
+        "$HOME/.local/share/i3-sessions"
 
     xdg-user-dirs-update || true
     fc-cache -fv >/dev/null 2>&1 || true
