@@ -87,10 +87,10 @@ PACMAN_PACKAGES=(
     gnome-keyring
     libsecret
     seahorse
+    copyq
 )
 
 REQUIRED_AUR_PACKAGES=(
-    greenclip
     i3lock-color
     betterlockscreen
     oh-my-zsh-git
