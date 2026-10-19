@@ -52,7 +52,7 @@ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 # Start dunst notification daemon
 exec --no-startup-id dunst
 
-# Start greenclip clipboard manager
+# Start copyq clipboard manager
 exec --no-startup-id copyq
 
 exec --no-startup-id caffeine W
@@ -88,6 +88,8 @@ exec_always --no-startup-id setxkbmap -layout "us,ara" -option "" -option "grp:s
 bindsym $mod+d exec ~/.config/rofi/launchers/type-4/launcher.sh
 
 bindsym $mod+Mod1+l exec ~/.config/rofi/powermenu/type-1/powermenu.sh
+# scripts menu (search & run your scripts)
+bindsym $mod+x exec --no-startup-id ~/.config/rofi/scripts/scripts-menu.sh
 
 # Take a normcap screenshot save image
 bindsym Print exec flameshot gui -p ~/Pictures/Screenshots/ -c
@@ -229,8 +231,8 @@ for_window [class="pavucontrol"] floating enable, resize set 800 500, move posit
 # Bluetooth manager
 for_window [class="Blueberry.py"] floating enable, resize set 800 500, move position center
 
-#Polybar launch
-exec_always --no-startup-id $HOME/.config/polybar/launch.sh 
+#Monitor layout (remembers last left/right choice) — also (re)launches Polybar
+exec_always --no-startup-id ~/scripts/monitor-layout.sh
 
 # Include multi-monitor workspace configuration
 include ~/.config/i3/workspaces.conf
