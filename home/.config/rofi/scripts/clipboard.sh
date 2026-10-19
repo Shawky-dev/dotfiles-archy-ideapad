@@ -26,7 +26,7 @@ items = json.loads(p.stdout)
 # Collapse newlines for display only
 display = [" ".join(obj['text'].replace("\n", " ").split()) for obj in items]
 
-rofi = ['rofi', '-dmenu', '-i', '-p', ' ', '-format', 'i',
+rofi = ['rofi', '-dmenu', '-i', '-p', '󰅌  Clipboard', '-format', 'i',
         '-theme', os.path.expanduser('~/.config/rofi/themes/clipboard.rasi')]
 
 p = sp.run(rofi, input='\n'.join(display), encoding='utf-8', stdout=sp.PIPE)

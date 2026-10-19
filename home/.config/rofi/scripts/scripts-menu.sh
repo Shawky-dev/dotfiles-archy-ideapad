@@ -39,7 +39,7 @@ list_scripts() {
 # Rofi CMD
 rofi_cmd() {
 	rofi -dmenu -i \
-		-p 'Scripts >' \
+		-p '󰆍  Scripts' \
 		-display-columns 1,2 -display-column-separator $'\t' \
 		-kb-accept-alt '' -kb-accept-custom '' \
 		-kb-custom-1 'Shift+Return' -kb-custom-2 'Control+Return' \

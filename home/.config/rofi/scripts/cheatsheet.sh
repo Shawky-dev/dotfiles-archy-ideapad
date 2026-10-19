@@ -11,7 +11,7 @@ DIR="$HOME/Documents/cheatsheets"
 
 # Get list of files
 selected=$(ls "$DIR" | rofi \
-    -dmenu -i -p "Cheatsheets" \
+    -dmenu -i -p "󰈙  Cheatsheets" \
     -theme "$theme")
 
 [ -z "$selected" ] && exit 0

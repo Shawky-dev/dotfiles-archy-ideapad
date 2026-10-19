@@ -37,6 +37,16 @@ RERUN = {
     'lazygit': 'lazygit', 'yazi': 'yazi',
 }
 
+# Nerd Font glyph per window class (lowercase) for the menu; other apps get a generic window glyph
+APP_ICONS = {
+    'kitty': '󰄛',
+    'code': '󰨞', 'com.microsoft.vscode': '󰨞',
+    'firefox': '󰈹', 'chromium': '󰊯', 'google-chrome': '󰊯',
+    'discord': '󰙯', 'spotify': '󰓇', 'bruno': '󱂛',
+    'thunar': '󰉋', 'org.gnome.nautilus': '󰉋', 'zathura': '󰈦',
+}
+OTHER_APP = '󰖯'
+
 
 # ---------------------------------------------------------------- /proc helpers
 
@@ -128,7 +138,7 @@ def capture(i3):
         pid = window_pid(con.window)
         spec = launch_spec(con, pid)
         if spec:
-            entries.append({'workspace': ws.name, 'num': ws.num, 'class': con.window_class,
+            entries.append({'workspace': ws.name, 'class': con.window_class,
                             'title': con.name, 'pid': pid, **spec})
         else:
             skipped.append(con.window_class or con.name)
@@ -209,13 +219,20 @@ def sessions():
     return sorted(p.stem for p in STORE.glob('*.json'))
 
 
-def summary(name):
+def windows_of(name):
     try:
-        wins = load(name)['windows']
+        return load(name)['windows']
     except (OSError, ValueError, KeyError):
-        return 'unreadable'
-    ws = sorted({(w['num'], w['workspace']) for w in wins})
-    return f"{len(wins)} windows · ws {' '.join(n for _, n in ws)}"
+        return None
+
+
+def app_icons(wins):
+    return '  '.join(dict.fromkeys(APP_ICONS.get((w['class'] or '').lower(), OTHER_APP) for w in wins))
+
+
+def summary(name):
+    wins = windows_of(name)
+    return f'{len(wins)} windows' if wins is not None else 'unreadable'
 
 
 def clean_name(name):
@@ -258,14 +275,15 @@ def confirm(question):
 
 def menu(i3):
     names = sessions()
+    name_w = max(map(len, names), default=0)
     dim = lambda s: f'<span alpha="50%">{escape(s)}</span>'
-    width = max(map(len, names), default=0)
-    lines = [f'󰕰  {escape(n.ljust(width))}   {dim(summary(n))}' for n in names]
+    # Icons go last in the non-Mono font: full-size glyphs, and their width can't shift other columns
+    lines = [f'{escape(n.ljust(name_w))}   '
+             f'<span font="Iosevka Nerd Font 13">{app_icons(windows_of(n) or [])}</span>' for n in names]
     lines.append(f'󰐕  {dim("Save current windows…")}')
     code, idx = rofi(lines, '󰕰  Workspace sessions', '-format', 'i', '-no-custom', '-markup-rows',
                      '-mesg', 'enter restore  ·  ctrl+s overwrite  ·  shift+del delete',
-                     '-kb-delete-entry', '', '-kb-custom-1', 'Control+s', '-kb-custom-2', 'Shift+Delete',
-                     '-theme-str', f'listview {{lines: {min(len(lines), 8)};}}')
+                     '-kb-delete-entry', '', '-kb-custom-1', 'Control+s', '-kb-custom-2', 'Shift+Delete')
     if code not in (0, 10, 11) or not idx.isdigit():
         return
     i = int(idx)
@@ -292,6 +310,8 @@ def selftest():
     assert clean_name(' Trunk work/setup ') == 'Trunk-work-setup'
     assert vscode_folder('main.py - /tmp - Visual Studio Code') == '/tmp'
     assert vscode_folder('Welcome - trunk - Visual Studio Code') is None
+    wins = [{'class': 'kitty'}, {'class': 'Weird'}, {'class': 'kitty'}, {'class': None}]
+    assert app_icons(wins) == f"{APP_ICONS['kitty']}  {OTHER_APP}"  # deduped, unknown/None -> generic
     global read
     read = lambda path, binary=False: b'/usr/share/code/code .' if binary else ''
     assert cmdline(1) == ['/usr/share/code/code', '.']
