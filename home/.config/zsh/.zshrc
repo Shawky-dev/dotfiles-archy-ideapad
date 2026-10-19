@@ -50,6 +50,10 @@ if [[ -d /usr/share/zsh/site-functions ]]; then
   fpath=(/usr/share/zsh/site-functions $fpath)
 fi
 
+# Keep completion dumps in the cache, not in $ZDOTDIR
+mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}"
+
 source "$ZSH/oh-my-zsh.sh"
 
 ### ADDITIONAL MANUAL PLUGINS ###################################################
@@ -62,7 +66,7 @@ if [[ -f "${ZSH_CUSTOM:-$ZSH/custom}/plugins/fzf-tab/fzf-tab.plugin.zsh" ]]; the
 fi
 
 ### COMPLETION INIT #############################################################
-autoload -Uz compinit && compinit
+autoload -Uz compinit && compinit -d "$ZSH_COMPDUMP"
 
 ### KEYBINDINGS #################################################################
 bindkey -e

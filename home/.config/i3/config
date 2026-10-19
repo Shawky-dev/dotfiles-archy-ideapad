@@ -85,9 +85,9 @@ exec_always --no-startup-id setxkbmap -layout "us,ara" -option "" -option "grp:s
 # bindsym $mod+d exec --no-startup-id dmenu_run
 
 # Rofi as application launcher
-bindsym $mod+d exec ~/.config/rofi/launchers/type-4/launcher.sh
+bindsym $mod+d exec ~/.config/rofi/scripts/launcher.sh
 
-bindsym $mod+Mod1+l exec ~/.config/rofi/powermenu/type-1/powermenu.sh
+bindsym $mod+Mod1+l exec ~/.config/rofi/scripts/powermenu.sh
 # scripts menu (search & run your scripts)
 bindsym $mod+x exec --no-startup-id ~/.config/rofi/scripts/scripts-menu.sh
 
@@ -97,9 +97,9 @@ bindsym Print exec flameshot gui -p ~/Pictures/Screenshots/ -c
 bindsym Shift+Print exec ~/scripts/screenshot-ocr.sh
 
 # Clipboard manager with rofi
-bindsym $mod+Shift+v exec ~/.config/rofi/text/clipboard.sh
+bindsym $mod+Shift+v exec ~/.config/rofi/scripts/clipboard.sh
 # Cheatsheet selector with rofi
-bindsym $mod+Shift+h exec ~/.config/rofi/text/cheatsheet.sh
+bindsym $mod+Shift+h exec ~/.config/rofi/scripts/cheatsheet.sh
 
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"

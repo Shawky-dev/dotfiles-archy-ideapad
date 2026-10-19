@@ -10,15 +10,12 @@
 ##   # rofi-args: left|right
 
 # Theme (same as power-modes menu)
-theme="$HOME/.config/rofi/text/style-3.rasi"
+theme="$HOME/.config/rofi/themes/menu.rasi"
 
 # Directories to search for executable scripts: "path:maxdepth"
 search_dirs=(
 	"$HOME/scripts:2"
-	"$HOME/.config/rofi/text:1"
-	"$HOME/.config/rofi/applets/bin:1"
-	"$HOME/.config/rofi/launchers/type-4:1"
-	"$HOME/.config/rofi/powermenu/type-1:1"
+	"$HOME/.config/rofi/scripts:1"
 )
 
 self="$(realpath "$0")"

@@ -23,3 +23,6 @@ home/.ssh
 # OS / Misc
 .DS_Store
 Thumbs.db
+
+# Tmux plugins (installed by TPM: prefix + I)
+home/.config/tmux/plugins/

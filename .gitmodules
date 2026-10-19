@@ -1,0 +1,3 @@
+[submodule "home/scripts/obs/youtube-music-obs-widget"]
+	path = home/scripts/obs/youtube-music-obs-widget
+	url = https://github.com/topik/youtube-music-obs-widget.git
