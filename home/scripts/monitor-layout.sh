@@ -23,5 +23,8 @@ if [ -n "$internal" ]; then
   done
 fi
 
+# Re-apply per-screen zoom (rofi screen-scale menu); also fixes positions
+"$HOME/.config/rofi/scripts/screen-scale.sh" apply
+
 # Bars must be relaunched to pick up the new geometry
 "$HOME/.config/polybar/launch.sh" >/dev/null 2>&1
