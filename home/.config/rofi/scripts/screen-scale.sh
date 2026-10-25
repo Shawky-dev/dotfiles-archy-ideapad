@@ -8,7 +8,7 @@
 ## are only moved so nothing overlaps.
 #
 ## Usage: screen-scale.sh          open the menu
-##        screen-scale.sh apply    re-apply saved zoom levels (used by monitor-layout.sh)
+##        screen-scale.sh apply    re-apply saved zoom levels (used by scripts/display/monitor-layout.sh)
 
 theme="$HOME/.config/rofi/themes/menu.rasi"
 state="${XDG_STATE_HOME:-$HOME/.local/state}/screen-scale"

@@ -3,7 +3,7 @@
 ## Focus: Conservation Mode, Performance Modes, Rapid Charge
 ## Icons: Nerd Fonts
 
-HELPER="${HOME}/scripts/lenovo_power_ctl.sh"
+HELPER="${HOME}/scripts/system/lenovo-power.sh"
 
 require_passwordless_sudo() {
     if sudo -n "$HELPER" get-conservation >/dev/null 2>&1; then

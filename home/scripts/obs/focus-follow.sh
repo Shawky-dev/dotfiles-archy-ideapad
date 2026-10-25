@@ -1,5 +1,5 @@
 #!/bin/bash
-# obs-focus-follow.sh - event-driven version (instant switching)
+# focus-follow.sh - event-driven version (instant switching)
 
 OBS_HOST="localhost"
 OBS_PORT="4455"

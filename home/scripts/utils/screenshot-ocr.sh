@@ -1,5 +1,5 @@
 #!/bin/bash
-# Save as ~/bin/screenshot-ocr
+# OCR a screen region with flameshot + tesseract; text goes to the clipboard
 TEMP_FILE="$HOME/Pictures/OCR/ocr_temp_$(date +%s).png"
 OUTPUT_FILE="$HOME/Pictures/OCR/ocr_output_$(date +%s).txt"
 

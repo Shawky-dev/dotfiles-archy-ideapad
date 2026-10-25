@@ -105,7 +105,7 @@ bindsym $mod+Shift+w exec --no-startup-id ~/.config/rofi/scripts/sessions.sh
 # Take a normcap screenshot save image
 bindsym Print exec flameshot gui -p ~/Pictures/Screenshots/ -c
 # Take a screenshot with OCR and extract text
-bindsym Shift+Print exec ~/scripts/screenshot-ocr.sh
+bindsym Shift+Print exec ~/scripts/utils/screenshot-ocr.sh
 
 # Clipboard manager with rofi
 bindsym $mod+Shift+v exec ~/.config/rofi/scripts/clipboard.sh
@@ -204,7 +204,7 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # swap workspaces between outputs
-bindsym $mod+Shift+s exec ~/scripts/swap-workspaces.sh
+bindsym $mod+Shift+s exec ~/scripts/display/workspace-swap.sh
 
 
 
@@ -243,7 +243,7 @@ for_window [class="pavucontrol"] floating enable, resize set 800 500, move posit
 for_window [class="Blueberry.py"] floating enable, resize set 800 500, move position center
 
 #Monitor layout (remembers last left/right choice) — also (re)launches Polybar
-exec_always --no-startup-id ~/scripts/monitor-layout.sh
+exec_always --no-startup-id ~/scripts/display/monitor-layout.sh
 
 # Include multi-monitor workspace configuration
 include ~/.config/i3/workspaces.conf

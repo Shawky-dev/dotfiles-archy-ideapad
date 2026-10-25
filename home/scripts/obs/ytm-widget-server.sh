@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# start-ytm-widget.sh
+# ytm-widget-server.sh
 #
 # Serves the youtube-music-obs-widget folder over localhost HTTP so that
 # OBS's Browser Source (CEF) treats it as loopback-to-loopback when it
@@ -9,10 +9,10 @@
 # that block file:// pages from reaching localhost APIs.
 #
 # Usage:
-#   ./start-ytm-widget.sh            # start (or confirm already running)
-#   ./start-ytm-widget.sh stop       # stop the server
-#   ./start-ytm-widget.sh restart    # restart the server
-#   ./start-ytm-widget.sh status     # check if it's running
+#   ./ytm-widget-server.sh            # start (or confirm already running)
+#   ./ytm-widget-server.sh stop       # stop the server
+#   ./ytm-widget-server.sh restart    # restart the server
+#   ./ytm-widget-server.sh status     # check if it's running
 
 set -euo pipefail
 
