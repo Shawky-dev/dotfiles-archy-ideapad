@@ -3,3 +3,22 @@
 @import "~/.config/rofi/themes/shared.rasinc"
 
 window { width: 640px; }
+
+listview { lines: 6; }
+
+element {
+    children: [ "element-icon", "element-text" ];
+    padding:  8px 12px;
+    spacing:  14px;
+}
+
+/* Image thumbnail (or a muted text glyph for text rows) */
+element-icon {
+    size:           60px;
+    vertical-align: 0.5;
+    cursor:         inherit;
+}
+
+element-text {
+    markup: true;
+}
