@@ -2,7 +2,10 @@
 
 ## Rofi : Scripts Menu (uses the power-modes menu theme)
 #
-## Enter        run the script in the background
+## Opens on your script folders; pick one to see its scripts.
+## Esc (or "..") goes back up a level.
+#
+## Enter        open a folder / run the script in the background
 ## Shift+Enter  run the script in a terminal (for interactive ones)
 ## Ctrl+Enter   type arguments before running
 #
@@ -12,34 +15,58 @@
 # Theme (same as power-modes menu)
 theme="$HOME/.config/rofi/themes/menu.rasi"
 
-# Directories to search for executable scripts: "path:maxdepth"
-search_dirs=(
-	"$HOME/scripts:2"
-	"$HOME/.config/rofi/scripts:1"
+# Each subfolder of ~/scripts is a menu folder; loose scripts show at the top
+scripts_root="$HOME/scripts"
+# Extra folders shown alongside them: "label:path"
+extra_dirs=(
+	"rofi:$HOME/.config/rofi/scripts"
 )
 
 self="$(realpath "$0")"
 
-# Collect executables as "name<TAB>dir<TAB>path", skipping binaries and this script
+# Executables in folder $1 as "label<TAB>$2<TAB>path", skipping binaries and this script
 list_scripts() {
-	for entry in "${search_dirs[@]}"; do
-		d="${entry%:*}"; depth="${entry##*:}"
-		[[ -d "$d" ]] || continue
-		find -L "$d" -maxdepth "$depth" -type f -perm -u+x \
-			-not -path '*/node_modules/*' -not -path '*/.git/*' 2>/dev/null |
-		while read -r f; do
-			[[ "$(realpath "$f")" == "$self" ]] && continue
-			head -c2 "$f" | grep -q '#!' || continue
-			d="$(dirname "$f")"
-			printf '%-26s\t%s\t%s\n' "$(basename "$f")" "${d/#$HOME/\~}" "$f"
-		done
-	done | sort -u
+	find -L "$1" -maxdepth 1 -type f -perm -u+x 2>/dev/null | sort |
+	while read -r f; do
+		[[ "$(realpath "$f")" == "$self" ]] && continue
+		head -c2 "$f" | grep -q '#!' || continue
+		printf '%-30s\t%s\t%s\n' "󰆍  $(basename "$f")" "$2" "$f"
+	done
+}
+
+# One folder entry, or nothing if it holds no scripts
+folder_entry() {
+	local n
+	n="$(list_scripts "$2" | wc -l)"
+	(( n )) && printf '%-30s\t%s scripts\t%s\n' "󰉋  $1" "$n" "$2"
+}
+
+# "label:path" for every folder: subfolders of ~/scripts, then extra_dirs
+all_dirs() {
+	local d
+	for d in "$scripts_root"/*/; do
+		echo "$(basename "$d"):${d%/}"
+	done
+	printf '%s\n' "${extra_dirs[@]}"
+}
+
+# Top level: folders first, then loose scripts, then every folder's scripts
+# (tagged with their folder) so a search matches both, folders listed first
+top_entries() {
+	local entry
+	while read -r entry; do
+		folder_entry "${entry%%:*}" "${entry#*:}"
+	done < <(all_dirs)
+	list_scripts "$scripts_root"
+	while read -r entry; do
+		list_scripts "${entry#*:}" "${entry%%:*}"
+	done < <(all_dirs)
 }
 
 # Rofi CMD
 rofi_cmd() {
-	rofi -dmenu -i \
-		-p '󰆍  Scripts' \
+	rofi -dmenu -i -no-custom \
+		-p "$1" \
 		-display-columns 1,2 -display-column-separator $'\t' \
 		-kb-accept-alt '' -kb-accept-custom '' \
 		-kb-custom-1 'Shift+Return' -kb-custom-2 'Control+Return' \
@@ -57,11 +84,28 @@ ask_args() {
 		-theme "$theme"
 }
 
-chosen="$(list_scripts | rofi_cmd)"
-code=$?
-[[ -z "$chosen" ]] && exit 0
+# Browse: an empty $dir is the top level
+dir=""
+while :; do
+	if [[ -z "$dir" ]]; then
+		chosen="$(top_entries | rofi_cmd '󰆍  Scripts')"
+	else
+		chosen="$( { printf '%-30s\tback\t..\n' '󰁍  ..'; list_scripts "$dir"; } |
+			rofi_cmd "󰉋  $(basename "$dir")")"
+	fi
+	code=$?
 
-path="${chosen##*$'\t'}"
+	if [[ -z "$chosen" ]]; then
+		[[ -n "$dir" ]] && { dir=""; continue; }
+		exit 0
+	fi
+
+	path="${chosen##*$'\t'}"
+	if [[ "$path" == ".." ]]; then dir=""
+	elif [[ -d "$path" ]]; then dir="$path"
+	else break
+	fi
+done
 
 # Get arguments if the script declares choices or Ctrl+Enter was used
 args=()
