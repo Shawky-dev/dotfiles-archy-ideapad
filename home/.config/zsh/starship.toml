@@ -1,0 +1,48 @@
+# Lean one-line prompt, close to the old p10k setup.
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = false
+command_timeout = 2000
+format = "$os$directory$git_branch$git_state$git_status$character"
+right_format = "$status$cmd_duration$jobs$python$nodejs$docker_context"
+
+[os]
+disabled = false
+style = "blue"
+format = "[$symbol ]($style)"
+
+[os.symbols]
+Arch = "\uf303"
+
+[directory]
+style = "bold blue"
+truncation_length = 3
+truncate_to_repo = false
+
+[git_branch]
+symbol = "\ue0a0 "
+style = "green"
+format = "[$symbol$branch]($style) "
+
+[git_status]
+style = "yellow"
+format = "([$all_status$ahead_behind]($style) )"
+
+[character]
+success_symbol = "[❯](green)"
+error_symbol = "[❯](red)"
+
+[status]
+disabled = false
+format = "[✘ $status]($style) "
+
+[cmd_duration]
+min_time = 3_000
+format = "[$duration]($style) "
+style = "yellow"
+
+[jobs]
+format = "[$symbol$number]($style) "
+
+[python]
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'

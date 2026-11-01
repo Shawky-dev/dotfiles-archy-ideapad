@@ -48,6 +48,9 @@ PACMAN_PACKAGES=(
     xwallpaper
     zsh
     zsh-completions
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    starship
     zoxide
     fzf
     fastfetch
@@ -94,8 +97,7 @@ PACMAN_PACKAGES=(
 REQUIRED_AUR_PACKAGES=(
     i3lock-color
     betterlockscreen
-    oh-my-zsh-git
-    zsh-theme-powerlevel10k
+    fzf-tab-git
     visual-studio-code-bin
     blueberry
     optimus-manager-git
@@ -153,36 +155,6 @@ install_aur_packages() {
             warn "Skipping optional AUR package: $pkg"
         fi
     done
-}
-
-prepare_zsh_layout() {
-    print_section "Preparing Oh My Zsh layout..."
-
-    if [ ! -e "$HOME/.oh-my-zsh" ] && [ -d /usr/share/oh-my-zsh ]; then
-        ln -s /usr/share/oh-my-zsh "$HOME/.oh-my-zsh"
-    fi
-
-    local zsh_custom="$HOME/.oh-my-zsh/custom"
-    mkdir -p "$zsh_custom/plugins"
-
-    if [ ! -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ] && [ -d /usr/share/oh-my-zsh ]; then
-        warn "~/.oh-my-zsh exists without the core files; using /usr/share/oh-my-zsh and keeping custom plugins in ~/.oh-my-zsh/custom."
-    fi
-
-    if [ ! -d "$zsh_custom/plugins/zsh-syntax-highlighting" ]; then
-        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
-            "$zsh_custom/plugins/zsh-syntax-highlighting"
-    fi
-
-    if [ ! -d "$zsh_custom/plugins/zsh-autosuggestions" ]; then
-        git clone https://github.com/zsh-users/zsh-autosuggestions.git \
-            "$zsh_custom/plugins/zsh-autosuggestions"
-    fi
-
-    if [ ! -d "$zsh_custom/plugins/fzf-tab" ]; then
-        git clone https://github.com/Aloxaf/fzf-tab.git \
-            "$zsh_custom/plugins/fzf-tab"
-    fi
 }
 
 prepare_directories() {
@@ -291,7 +263,6 @@ echo -e "${GREEN}Installing dotfiles packages and runtime dependencies...${NC}"
 ensure_yay
 install_pacman_packages
 install_aur_packages
-prepare_zsh_layout
 prepare_directories
 download_wallpapers
 update_lockscreen

@@ -1,78 +1,80 @@
 export DISABLE_AUTO_TITLE='true'
 fastfetch
-### POWERLEVEL10K INSTANT PROMPT ###############################################
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
 
 ### HOMEBREW INIT ###############################################################
 if [[ -f "/opt/homebrew/bin/brew" ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-### OH MY ZSH ###################################################################
-if [[ -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]]; then
-  export ZSH="$HOME/.oh-my-zsh"
-elif [[ -f "/usr/share/oh-my-zsh/oh-my-zsh.sh" ]]; then
-  export ZSH="/usr/share/oh-my-zsh"
-else
-  export ZSH="$HOME/.oh-my-zsh"
-fi
-
-if [[ "$ZSH" == "/usr/share/oh-my-zsh" && -d "$HOME/.oh-my-zsh/custom" ]]; then
-  export ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
-fi
-
-# Load Powerlevel10k theme
-if [[ -f "${ZSH_CUSTOM:-$ZSH/custom}/themes/powerlevel10k/powerlevel10k.zsh-theme" ]]; then
-  ZSH_THEME="powerlevel10k/powerlevel10k"
-elif [[ -f "/usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme" ]]; then
-  ZSH_THEME=""
-  source "/usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme"
-else
-  ZSH_THEME=""
-fi
-
-# OMZ plugins (translated from your Zinit plugins + snippets)
-plugins=(
-  git
-  sudo
-  aws
-  kubectl
-  kubectx
-  archlinux
-  command-not-found
-  zsh-syntax-highlighting
-  zsh-autosuggestions
-)
-
+### COMPLETION INIT #############################################################
 if [[ -d /usr/share/zsh/site-functions ]]; then
   fpath=(/usr/share/zsh/site-functions $fpath)
 fi
 
 # Keep completion dumps in the cache, not in $ZDOTDIR
-mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}"
-
-source "$ZSH/oh-my-zsh.sh"
-
-### ADDITIONAL MANUAL PLUGINS ###################################################
-
-# fzf-tab (OMZ does not include this plugin)
-# Make sure it is cloned manually:
-# git clone https://github.com/Aloxaf/fzf-tab ~/.oh-my-zsh/custom/plugins/fzf-tab
-if [[ -f "${ZSH_CUSTOM:-$ZSH/custom}/plugins/fzf-tab/fzf-tab.plugin.zsh" ]]; then
-  source "${ZSH_CUSTOM:-$ZSH/custom}/plugins/fzf-tab/fzf-tab.plugin.zsh"
-fi
-
-### COMPLETION INIT #############################################################
+mkdir -p "${ZSH_COMPDUMP:h}"
 autoload -Uz compinit && compinit -d "$ZSH_COMPDUMP"
+
+### PLUGINS #####################################################################
+# Installed with: yay -S zsh-autosuggestions zsh-syntax-highlighting fzf-tab-git
+# Order matters: fzf-tab after compinit, syntax-highlighting last.
+for plugin in \
+  /usr/share/zsh/plugins/fzf-tab-git/fzf-tab.plugin.zsh \
+  /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh \
+  /usr/share/doc/pkgfile/command-not-found.zsh \
+  /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+do
+  [[ -f "$plugin" ]] && source "$plugin"
+done
+unset plugin
 
 ### KEYBINDINGS #################################################################
 bindkey -e
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 bindkey '^[w' kill-region
+
+# Keys Oh My Zsh used to bind for us
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search edit-command-line
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+zle -N edit-command-line
+bindkey '^[[A' up-line-or-beginning-search     # Up: search history by what's typed
+bindkey '^[OA' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search   # Down
+bindkey '^[OB' down-line-or-beginning-search
+bindkey '^[[H' beginning-of-line               # Home
+bindkey '^[OH' beginning-of-line
+bindkey '^[[F' end-of-line                     # End
+bindkey '^[OF' end-of-line
+bindkey '^[[3~' delete-char                    # Delete
+bindkey '^[[1;5C' forward-word                 # Ctrl+Right
+bindkey '^[[1;5D' backward-word                # Ctrl+Left
+bindkey '^H' backward-kill-word                # Ctrl+Backspace
+bindkey '^[[3;5~' kill-word                    # Ctrl+Delete
+bindkey '^[[Z' reverse-menu-complete           # Shift+Tab
+bindkey '^x^e' edit-command-line               # Ctrl+X Ctrl+E: edit line in $EDITOR
+
+### SHELL OPTIONS ###############################################################
+setopt interactive_comments      # allow "# comments" on the command line
+setopt auto_cd                   # type a folder name to cd into it
+setopt auto_pushd pushd_ignore_dups pushd_minus   # cd -<TAB> lists recent folders
+setopt complete_in_word always_to_end
+setopt long_list_jobs
+unsetopt flow_control            # free up Ctrl+S / Ctrl+Q
+
+# Press Esc twice to add/remove "sudo" at the start of the line
+sudo-command-line() {
+  [[ -z $BUFFER ]] && LBUFFER="$(fc -ln -1)"
+  if [[ $BUFFER == sudo\ * ]]; then
+    LBUFFER="${LBUFFER#sudo }"
+  else
+    LBUFFER="sudo $LBUFFER"
+  fi
+}
+zle -N sudo-command-line
+bindkey '\e\e' sudo-command-line
 
 ### HISTORY CONFIG ##############################################################
 HISTSIZE=5000
@@ -83,11 +85,15 @@ HISTDUP=erase
 setopt appendhistory sharehistory
 setopt hist_ignore_space hist_ignore_all_dups hist_save_no_dups
 setopt hist_ignore_dups hist_find_no_dups
+setopt extended_history hist_verify    # timestamps; show !! expansions before running
 
 ### COMPLETION STYLE ############################################################
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu no
+zstyle ':completion:*' special-dirs true     # complete . and ..
+zstyle ':completion:*' use-cache yes
+zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/compcache"
 
 # fzf-tab preview settings
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
@@ -95,6 +101,9 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 ### ALIASES #####################################################################
 alias ls='ls --color'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias -- -='cd -'
 alias clipboard='xclip -selection clipboard'
 
 alias vncon='x11vnc -display :0 -auth guess -forever -loop -noxdamage -repeat -rfbauth ~/.vnc/passwd -rfbport 5900 & disown'
@@ -105,15 +114,13 @@ alias nukedocker='~/scripts/system/docker-nuke.sh'
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 
-### P10K CONFIG #################################################################
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+### PROMPT ######################################################################
+export STARSHIP_CONFIG="$ZDOTDIR/starship.toml"
+if command -v starship >/dev/null; then
+  eval "$(starship init zsh)"
+fi
 
-# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
-[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
-
-
-
-
+### ROS2 ########################################################################
 ros2-start(){
 
   # allow container GUI
@@ -143,6 +150,3 @@ ros2-connect(){
 ros2-clean(){
   docker rm -f ros2
 }
-
-# Created by `pipx` on 2026-04-29 08:59:54
-export PATH="$PATH:/home/shawky/.local/bin"
