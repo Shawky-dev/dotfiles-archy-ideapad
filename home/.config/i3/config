@@ -52,6 +52,9 @@ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 # Start dunst notification daemon
 exec --no-startup-id dunst
 
+# Track the last active media player, so polybar and playerctl follow it
+exec --no-startup-id playerctld daemon
+
 # Start copyq clipboard manager
 exec --no-startup-id copyq
 
@@ -246,6 +249,9 @@ for_window [class="pavucontrol"] floating enable, resize set 800 500, move posit
 
 # Bluetooth manager
 for_window [class="Blueberry.py"] floating enable, resize set 800 500, move position center
+
+# Floating terminal (polybar updates click opens yay here)
+for_window [class="float"] floating enable, resize set 1000 600, move position center
 
 #Monitor layout (remembers last left/right choice) — also (re)launches Polybar
 exec_always --no-startup-id ~/scripts/display/monitor-layout.sh
