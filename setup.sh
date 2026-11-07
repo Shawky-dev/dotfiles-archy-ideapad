@@ -222,6 +222,13 @@ chmod_deployed_scripts() {
     fi
 }
 
+disable_pc_speaker() {
+    # The PC speaker beeps loudly on errors (login screen, Firefox find) and ignores the volume
+    print_section "Disabling the PC speaker beep..."
+    echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf >/dev/null
+    sudo rmmod pcspkr 2>/dev/null || true
+}
+
 set_default_shell() {
     local zsh_path
     zsh_path="$(command -v zsh)"
@@ -268,5 +275,6 @@ download_wallpapers
 update_lockscreen
 chmod_repo_scripts
 chmod_deployed_scripts
+disable_pc_speaker
 set_default_shell
 print_summary

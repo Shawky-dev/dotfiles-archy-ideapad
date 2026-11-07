@@ -28,3 +28,12 @@ fi
 
 # Bars must be relaunched to pick up the new geometry
 "$HOME/.config/polybar/launch.sh" >/dev/null 2>&1
+
+# betterlockscreen caches its image for one monitor layout; rebuild it when the layout changes
+layout_state="${XDG_STATE_HOME:-$HOME/.local/state}/lockscreen-layout"
+layout=$(xrandr --listactivemonitors | tail -n +2)
+if [ "$layout" != "$(cat "$layout_state" 2>/dev/null)" ] && command -v betterlockscreen >/dev/null; then
+  mkdir -p "$(dirname "$layout_state")"
+  (betterlockscreen -u "$HOME/Pictures/wallpapers/Nighthawks.png" --fx dimblur >/dev/null 2>&1 &&
+    echo "$layout" > "$layout_state") &
+fi
