@@ -1,11 +1,12 @@
 #!/bin/bash
-# Polybar bluetooth: connected device names, "On" if none, "Off" if powered off.
+# Polybar bluetooth icon: blue when a device is connected, normal when on, dim when off.
 # Requires: bluetoothctl (BlueZ 5.65+ for "devices Connected")
+icon=$''
 
 if ! bluetoothctl show | grep -q "Powered: yes"; then
-    echo "Off"
-    exit
+    echo "%{F#665c54}$icon%{F-}"
+elif [ -n "$(bluetoothctl devices Connected)" ]; then
+    echo "%{F#83a598}$icon%{F-}"
+else
+    echo "$icon"
 fi
-
-names=$(bluetoothctl devices Connected | cut -d ' ' -f 3- | paste -sd ',' | sed 's/,/, /g')
-echo "${names:-On}"
