@@ -1,5 +1,7 @@
 [global]
 width = 300
+# max height; short notifications stay small (polybar system details need ~14 lines)
+height = (0, 450)
 offset = 5x40
 follow = mouse
 progress_bar_min_width = 80
@@ -52,3 +54,8 @@ appname = Sessions
 icon_position = off
 set_stack_tag = sessions
 timeout = 4
+
+# System details from polybar CPU/RAM/temp clicks (polybar/scripts/sysinfo.sh)
+[sysinfo]
+appname = Sysinfo
+icon_position = off
