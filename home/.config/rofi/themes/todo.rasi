@@ -1,0 +1,11 @@
+/** Rofi : Todo editor, opens top-right over the todo card **/
+
+@import "~/.config/rofi/themes/shared.rasinc"
+
+window {
+    location: northeast;
+    anchor:   northeast;
+    width:    420px;
+    x-offset: -12px;
+    y-offset: 40px;
+}
